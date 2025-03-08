@@ -2,7 +2,6 @@
     <Form @submit="submitContact" :validation-schema="contactFormSchema">
         <div class="form-group">
             <label for="name">Tên</label>
-
             <Field name="name" type="text" class="form-control" v-model="contactLocal.name" />
             <ErrorMessage name="name" class="error-feedback" />
         </div>
@@ -21,18 +20,18 @@
             <Field name="phone" type="tel" class="form-control" v-model="contactLocal.phone" />
             <ErrorMessage name="phone" class="error-feedback" />
         </div>
-
         <div class="form-group form-check">
             <input name="favorite" type="checkbox" class="form-check-input" v-model="contactLocal.favorite" />
             <label for="favorite" class="form-check-label">
                 <strong>Liên hệ yêu thích</strong>
             </label>
         </div>
-
         <div class="form-group">
-            <button class="btn btn-primary">Lưu</button>
-            <button v-if="contactLocal._id" type="button" class="ml-2 btn btn-danger"@click="deleteContact">Xóa</button>
-            <button type="button" class="ml-2 btn btn-danger" @click="Cancel">Thoát</button>
+            <button type="submit" class="btn btn-primary">Lưu</button>
+            <button v-if="contactLocal._id" type="button" class="ml-2 btn btn-danger" @click="deleteContact">
+                Xóa
+            </button>
+            
         </div>
     </Form>
 </template>
@@ -70,31 +69,27 @@ export default {
                 ),
         });
         return {
-// Chúng ta sẽ không muốn hiệu chỉnh props, nên tạo biến cục bộ
-// contactLocal để liên kết với các input trên form
-            contactLocal: this.contact,
+            contactLocal: this.contact ? this.contact : {
+                name: "",
+                email: "",
+                address: "",
+                phone: "",
+                favorite: false,
+            },
             contactFormSchema,
         };
     },
     methods: {
-            submitContact() {
-                this.$emit("submit:contact", this.contactLocal);
-            },
-            deleteContact() {
-                this.$emit("delete:contact", this.contactLocal.id);
-            },
-            Cancel(){
-                const reply = window.confirm('You have unsaved changes! Do you want to leave?')
-                if (!reply) {
-// stay on the page if
-// user clicks 'Cancel'
-                    return false
-                }
-                else this.$router.push({ name: "contactbook" });
-            }
+        submitContact() {
+            this.$emit("submit:contact", this.contactLocal);
         },
+        deleteContact() {
+            this.$emit("delete:contact", this.contactLocal.id);
+        },
+    },
 };
 </script>
+
 <style scoped>
 @import "@/assets/form.css";
 </style>
